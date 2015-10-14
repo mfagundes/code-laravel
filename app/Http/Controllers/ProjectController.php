@@ -2,36 +2,37 @@
 
 namespace CodeProject\Http\Controllers;
 
-use CodeProject\Repositories\ClientRepository;
-use CodeProject\Services\ClientService;
+use CodeProject\Repositories\ProjectRepository;
+
+use CodeProject\Http\Requests;
+use CodeProject\Services\ProjectService;
 use Illuminate\Http\Request;
-use Symfony\Component\EventDispatcher\Tests\Service;
 
-
-class ClientController extends Controller
+class ProjectController extends Controller
 {
-
     /**
-     * @var ClientRepository
+     * @var ProjectRepository
      */
-
     private $repository;
 
     /**
-     * @var ClientService
+     * @var ProjectService
      */
+
     private $service;
 
     /**
-     * @param ClientRepository $repository
-     * @param ClientService $service
+     * @param ProjecttRepository $repository
+     * @param ProjectService $service
      */
 
-    public function __construct(ClientRepository $repository, ClientService $service)
+    public function __construct(ProjectRepository $repository, ProjectService $service )
     {
+
         $this->repository = $repository;
         $this->service = $service;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -39,9 +40,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return $this->repository->all();
+        return $this->repository->with(['owner', 'client'])->all();
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -62,12 +62,7 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $response =  $this->repository->find($id);
-        if(!$response){
-            $response = "Usuário inexistente";
-        }
-
-        return $response;
+        return $this->repository->with(['owner', 'client'])->find($id);
     }
 
     /**
@@ -90,13 +85,6 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        if($this->repository->find($id)) {
-            $this->repository->delete($id);
-            $response = "Usuário " . $id . " excluído";
-        } else {
-            $response = "Usuário inexistente";
-        }
-
-        return $response;
+        //
     }
 }
