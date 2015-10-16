@@ -32,7 +32,11 @@ $factory->define(CodeProject\Entities\Client::class, function (Faker\Generator $
 });
 
 $factory->define(CodeProject\Entities\Project::class, function (Faker\Generator $faker) {
+    $u = count(\CodeProject\Entities\User::all());
+    $c = count(\CodeProject\Entities\Client::all());
     return [
+        'owner_id' => rand(1, $u),
+        'client_id' => rand(1, $c),
         'name' => $faker->name,
         'description' => $faker->sentence,
         'progress' => $faker->word,
