@@ -4,6 +4,8 @@ namespace CodeProject\Http\Controllers;
 
 use CodeProject\Repositories\ClientRepository;
 use CodeProject\Services\ClientService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Symfony\Component\EventDispatcher\Tests\Service;
 
@@ -62,12 +64,14 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $response =  $this->repository->find($id);
-        if(!$response){
-            $response = "Usuário inexistente";
+        try{
+            return $this->repository->find($id);
+        } catch(ModelNotFoundException $e){
+            return [
+                "error" => true,
+                "message" => "Erro: ". $e->getMessage()
+            ];
         }
-
-        return $response;
     }
 
     /**
@@ -79,7 +83,14 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->service->update($request->all(), $id);
+        try{
+            return $this->service->update($request->all(), $id);
+        } catch (ModelNotFoundException $e){
+            return [
+                "error" => true,
+                "message" => "Erro: ".$e->getMessage()
+            ];
+        }
     }
 
     /**
@@ -90,13 +101,19 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        if($this->repository->find($id)) {
+        try {
             $this->repository->delete($id);
-            $response = "Usuário " . $id . " excluído";
-        } else {
-            $response = "Usuário inexistente";
+            return "Cliente com id " . $id . " excluído com sucesso";
+        } catch(ModelNotFoundException $e) {
+            return [
+                "error" => true,
+                "message" => "Erro: " . $e->getMessage()
+            ];
+        } catch(QueryException $e){
+            return [
+                "error" => true,
+                "message" => "Cliente possui projetos vinculados. Elimine-os antes de excluir o cliente"
+            ];
         }
-
-        return $response;
     }
 }
