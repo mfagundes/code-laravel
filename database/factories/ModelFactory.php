@@ -39,8 +39,8 @@ $factory->define(CodeProject\Entities\Project::class, function (Faker\Generator 
         'client_id' => rand(1, $c),
         'name' => $faker->name,
         'description' => $faker->sentence,
-        'progress' => $faker->word,
-        'status' => $faker->word,
-        'due_date' => $faker->dateTime
+        'progress' => rand(1,100),
+        'status' => rand(1,3),
+        'due_date' => $faker->dateTimeBetween($startDate = '-30days', $endDate = 'now')
     ];
 });
