@@ -93,6 +93,13 @@ class ProjectService
         }
     }
 
+    /**
+     * @param array $data
+     * @param $id
+     * @return array|string
+     *
+     * Não consegui aqui usar ProjectMember, daí ter criado um repository
+     */
     public function removeMember(array $data, $id)
     {
         try {
@@ -121,6 +128,20 @@ class ProjectService
             ];
         }
 
+    }
+
+    public function is_member($id, $member_id)
+    {
+        $m = \CodeProject\Entities\User::find($member_id);
+        if(count($m)==0) {
+            return "Usuário com id " . $member_id . " não existe";
+        }
+
+        if(count($this->projectMemberRepository->findWhere(['project_id'=>$id, 'member_id'=>$member_id]))>0) {
+            return "Usuário " . $m->name . " pertence ao projeto " . $id;
+        } else {
+            return "Usuário " . $m->name . " não pertence ao projeto " . $id;
+        }
     }
 
 

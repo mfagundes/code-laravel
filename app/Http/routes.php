@@ -41,6 +41,8 @@ Route::group(['middleware'=>'oauth'], function() {
         Route::delete('{id}/member', 'ProjectController@remove_member');
 
         Route::get('{id}/member', 'ProjectController@show_members');
+
+        Route::get('{id}/member/{member_id}', 'ProjectController@is_member');
     });
 });
 
