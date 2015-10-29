@@ -2,6 +2,7 @@
 
 namespace CodeProject\Http\Controllers;
 
+use CodeProject\Entities\Project;
 use CodeProject\Repositories\ProjectRepository;
 
 use CodeProject\Http\Requests;
@@ -168,6 +169,7 @@ class ProjectController extends Controller
     }
 
     /**
+     * TODO: use dependency injection instead of using the class Project directly
      * Lists all members of project
      * @param $id
      * @return array|string
@@ -175,7 +177,7 @@ class ProjectController extends Controller
     public function show_members($id)
     {
         try {
-            $p = $this->repository->find($id);
+            $p = Project::find($id);
             if($p->members->isEmpty()){
                 return "Projeto não contém membros";
             } else {
