@@ -7,11 +7,21 @@ use Prettus\Repository\Eloquent\BaseRepository;
 
 class ProjectRepositoryEloquent extends BaseRepository implements ProjectRepository
 {
+    /**
+     * BaseRepository requires model() method
+     * @return mixed
+     */
     public function model()
     {
         return Project::class;
     }
 
+    /**
+     * Check if memberId is a member of project projectId
+     * @param $projectId
+     * @param $memberId
+     * @return bool
+     */
     public function hasMember($projectId, $memberId){
         $project = $this->find($projectId);
 
@@ -24,6 +34,12 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
         return false;
     }
 
+    /**
+     * Check if $userId is owner of $projectId
+     * @param $projectId
+     * @param $userId
+     * @return bool
+     */
     public function isOwner($projectId, $userId)
     {
         if(count($this->findWhere(['id'=>$projectId, 'owner_id'=>$userId]))){

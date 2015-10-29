@@ -31,6 +31,11 @@ class ProjectService
      */
     private $projectMemberRepository;
 
+    /**
+     * @param ProjectRepository $repository
+     * @param ProjectValidator $validator
+     * @param ProjectMemberRepository $projectMemberRepository
+     */
     public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectMemberRepository $projectMemberRepository)
     {
 
@@ -39,6 +44,11 @@ class ProjectService
         $this->projectMemberRepository = $projectMemberRepository;
     }
 
+    /**
+     * Create projects after checking params are valid
+     * @param array $data
+     * @return array|mixed
+     */
     public function create(array $data)
     {
         try{
@@ -52,6 +62,12 @@ class ProjectService
         }
     }
 
+    /**
+     * Update project after checking params are valid
+     * @param array $data
+     * @param $id
+     * @return array|mixed
+     */
     public function update(array $data, $id)
     {
         try {
@@ -65,6 +81,14 @@ class ProjectService
         }
     }
 
+    /**
+     * TODO: refactor this method (maybe move to ProjectRepositoryEloquent)
+     * Checks if project ($id) and member ($data['member_id']) exist
+     * and create relation between them
+     * @param array $data
+     * @param $id
+     * @return array|static
+     */
     public function addMember(array $data, $id)
     {
         try {
@@ -94,6 +118,10 @@ class ProjectService
     }
 
     /**
+     * TODO: refactor this method (maybe move to ProjectRepositoryEloquent)
+     *
+     * Checks if project ($id) exists and remove user $data['member_id']
+     * if he/she is a project member
      * @param array $data
      * @param $id
      * @return array|string
@@ -130,6 +158,13 @@ class ProjectService
 
     }
 
+    /**
+     * TODO: use json response
+     * Checks if user ($member_id) is member of project ($id)
+     * @param $id
+     * @param $member_id
+     * @return string
+     */
     public function is_member($id, $member_id)
     {
         $m = \CodeProject\Entities\User::find($member_id);

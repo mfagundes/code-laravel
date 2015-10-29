@@ -25,7 +25,7 @@ class ProjectController extends Controller
     private $service;
 
     /**
-     * @param ProjecttRepository $repository
+     * @param ProjectRepository $repository
      * @param ProjectService $service
      */
 
@@ -130,6 +130,11 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * Check if logged user is owner of the project
+     * @param $projectId
+     * @return bool
+     */
     private function checkProjectOwner($projectId)
     {
         $userId = Authorizer::getResourceOwnerId();
@@ -137,6 +142,10 @@ class ProjectController extends Controller
         return $this->repository->isOwner($projectId, $userId);
     }
 
+    /** Check if logged user is member of the project
+     * @param $projectId
+     * @return bool
+     */
     private function checkProjectMember($projectId)
     {
         $userId = Authorizer::getResourceOwnerId();
@@ -144,6 +153,11 @@ class ProjectController extends Controller
         return $this->repository->hasMember($projectId, $userId);
     }
 
+    /**
+     * Check if logged user is owner or member of the project
+     * @param $projectId
+     * @return bool
+     */
     private function checkProjectPermissions($projectId)
     {
         if($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)){
@@ -153,6 +167,11 @@ class ProjectController extends Controller
         return false;
     }
 
+    /**
+     * Lists all members of project
+     * @param $id
+     * @return array|string
+     */
     public function show_members($id)
     {
         try {
