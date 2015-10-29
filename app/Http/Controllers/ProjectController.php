@@ -136,4 +136,37 @@ class ProjectController extends Controller
 
         return $this->repository->isOwner($projectId, $userId);
     }
+
+    public function show_members($id)
+    {
+        try {
+            $p = $this->repository->find($id);
+            if($p->members->isEmpty()){
+                return "Projeto não contém membros";
+            } else {
+                return $p->members;
+            }
+        } catch (ModelNotFoundException $e){
+            return [
+                "error" => true,
+                "message" => "Projeto inexistente"
+            ];
+        }
+    }
+
+    public function add_member(Request $request, $id)
+    {
+        return $this->service->addMember($request->all(), $id);
+
+    }
+
+    public function remove_member(Request $request, $id)
+    {
+        return $this->service->removeMember($request->all(), $id);
+    }
+
+    public function is_member($id, $member_id)
+    {
+        return $this->service->is_member($id, $member_id);
+    }
 }

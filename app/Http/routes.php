@@ -21,6 +21,7 @@ Route::post('oauth/access_token', function() {
 
 Route::group(['middleware'=>'oauth'], function() {
     Route::resource('client', 'ClientController', ['except'=>['create', 'edit]']]);
+    Route::resource('project', 'ProjectController', ['except'=>['create', 'edit']]);
 
     Route::resource('project', 'ProjectController', ['except'=>['create', 'edit']]);
 
@@ -38,6 +39,13 @@ Route::group(['middleware'=>'oauth'], function() {
         Route::get('{id}/task/{taskId}', 'ProjectTaskController@show');
         Route::put('{id}/task/{taskId}', 'ProjectTaskController@update');
         Route::delete('{id}/task/{taskId}', 'ProjectTaskController@destroy');
+
+        Route::post('{id}/member', 'ProjectController@add_member');
+        Route::delete('{id}/member', 'ProjectController@remove_member');
+
+        Route::get('{id}/member', 'ProjectController@show_members');
+
+        Route::get('{id}/member/{member_id}', 'ProjectController@is_member');
     });
 });
 
