@@ -177,7 +177,7 @@ class ProjectController extends Controller
     public function show_members($id)
     {
         try {
-            $p = Project::find($id);
+            $p = $this->repository->skipPresenter()->find($id);
             if($p->members->isEmpty()){
                 return "Projeto não contém membros";
             } else {

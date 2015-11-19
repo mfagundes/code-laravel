@@ -92,7 +92,7 @@ class ProjectService
     public function addMember(array $data, $id)
     {
         try {
-            $p = $this->repository->find($id);
+            $p = $this->repository->skipPresenter()->find($id);
             $u = User::find($data['member_id']);
 
             foreach($p->members as $member) {
@@ -131,7 +131,7 @@ class ProjectService
     public function removeMember(array $data, $id)
     {
         try {
-            $p = $this->repository->find($id);
+            $p = $this->repository->skipPresenter()->find($id);
             foreach($p->members as $member) {
                 if($member['id']==$data['member_id']){
                     $pm = $this->projectMemberRepository->findWhere(['project_id'=>$id, 'member_id'=>$data['member_id']]);
