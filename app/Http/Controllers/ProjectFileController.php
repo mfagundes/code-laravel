@@ -63,6 +63,9 @@ class ProjectFileController extends Controller
     public function store(Request $request)
     {
         $file = $request->file('file');
+        if(!$file)
+            return "Arquivo é obrigatório";
+
         $extension = $file->getClientOriginalExtension();
 
         $data['file'] = $file;
@@ -71,7 +74,7 @@ class ProjectFileController extends Controller
         $data['project_id'] = $request->project_id;
         $data['description'] = $request->description;
 
-        $this->service->createFile($data);
+        return $this->service->createFile($data);
 
     }
 
@@ -112,11 +115,12 @@ class ProjectFileController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
+     * @param $file_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $file_id)
     {
-        //
+        return $this->service->removeFile($id, $file_id);
     }
 }

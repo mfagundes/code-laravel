@@ -14,6 +14,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class ProjectService
@@ -195,10 +196,42 @@ class ProjectService
     public function createFile(array $data)
     {
         $project = $this->repository->skipPresenter()->find($data['project_id']);
-        $projectFile = $project->files()->create($data);
+        if(!$project)
+            return "Projeto não existe";
 
-        $this->storage->put($projectFile->id . "." . $data['extension'], $this->filesystem->get($data['file']));
+        try {
+            $projectFile = $project->files()->create($data);
 
+            $this->storage->put($projectFile->id . "." . $data['extension'], $this->filesystem->get($data['file']));
+            return "Arquivo " . $data['name'] . " criado com sucesso";
+        } catch (Exception $e) {
+            return "Erro ao criar arquivo: " . $e;
+        }
+    }
+
+    public function removeFile($project_id, $file_id)
+    {
+        $user_is_authorized = true;
+        try {
+            $project = $this->repository->skipPresenter()->find($project_id);
+
+            if($user_is_authorized){
+
+                $projectFile = $project->files()->find($file_id);
+                if ($projectFile) {
+                    $deletedFile = $project->files()->find($file_id)->delete();
+                    $this->storage->delete($projectFile['id'] . '.' . $projectFile['extension']);
+                    return "Arquivo " . $projectFile['name'] . " removido com sucesso";
+                } else {
+                    return "Arquivo não existe ou não pertence ao projeto";
+                }
+            }
+
+        } catch (ModelNotFoundException $e) {
+            return "Projeto não existe";
+        } catch (ErrorException $e) {
+            return "Erro na exclusão de arquivo";
+        }
     }
 
 
