@@ -12,6 +12,9 @@ use Illuminate\Database\QueryException;
 use Mockery\CountValidator\Exception;
 use Prettus\Validator\Exceptions\ValidatorException;
 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProjectService
 {
@@ -177,6 +180,16 @@ class ProjectService
         } else {
             return "Usuário " . $m->name . " não pertence ao projeto " . $id;
         }
+    }
+
+    public function createFile(array $data)
+    {
+        // name
+        // description
+        // extension
+        // file
+        Storage::put($data['name'] . "." . $data['extension'], File::get($data['file']));
+
     }
 
 
