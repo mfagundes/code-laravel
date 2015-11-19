@@ -62,3 +62,11 @@ $factory->define(\CodeProject\Entities\ProjectTask::class, function (\Faker\Gene
         'status' => rand(1,3)
     ];
 });
+
+$factory->define(\CodeProject\Entities\OauthClient::class, function (\Faker\Generator $faker){
+    return [
+        'id' => 'appID1',
+        'secret' => 'secret',
+        'name' => 'AngularAPP'
+    ];
+});
