@@ -71,7 +71,14 @@ class ProjectController extends Controller
                 return ['error'=>'Access forbidden'];
             }
 
-            return $this->repository->with(['owner', 'client'])->find($id);
+            $response = $this->repository->with(['owner', 'client'])->findWhere(['id' => $id, 'owner_id'=>Authorizer::getResourceOwnerId()]);
+
+            if (count($response['data']) > 0)
+            {
+                return $response;
+            } else {
+                return "Projeto(s) não existe(m) ou não pertence(m) a você";
+            }
 
         } catch(ModelNotFoundException $e) {
             return [
