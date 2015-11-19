@@ -12,8 +12,8 @@ use Illuminate\Database\QueryException;
 use Mockery\CountValidator\Exception;
 use Prettus\Validator\Exceptions\ValidatorException;
 
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Factory as Storage;
 
 
 class ProjectService
@@ -33,18 +33,28 @@ class ProjectService
      * @var ProjectMemberRepository
      */
     private $projectMemberRepository;
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+    /**
+     * @var Storage
+     */
+    private $storage;
 
     /**
      * @param ProjectRepository $repository
      * @param ProjectValidator $validator
      * @param ProjectMemberRepository $projectMemberRepository
      */
-    public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectMemberRepository $projectMemberRepository)
+    public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectMemberRepository $projectMemberRepository, Filesystem $filesystem, Storage $storage)
     {
 
         $this->repository = $repository;
         $this->validator = $validator;
         $this->projectMemberRepository = $projectMemberRepository;
+        $this->filesystem = $filesystem;
+        $this->storage = $storage;
     }
 
     /**
@@ -188,7 +198,7 @@ class ProjectService
         // description
         // extension
         // file
-        Storage::put($data['name'] . "." . $data['extension'], File::get($data['file']));
+        $this->storage->put($data['name'] . "." . $data['extension'], $this->filesystem->get($data['file']));
 
     }
 
