@@ -60,7 +60,7 @@ class ProjectFileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $file = $request->file('file');
         if(!$file)
@@ -71,7 +71,7 @@ class ProjectFileController extends Controller
         $data['file'] = $file;
         $data['extension'] = $extension;
         $data['name'] = $request->name;
-        $data['project_id'] = $request->project_id;
+        $data['project_id'] = $id;
         $data['description'] = $request->description;
 
         return $this->service->createFile($data);

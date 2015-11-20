@@ -6,6 +6,7 @@ use CodeProject\Entities\ProjectMember;
 use CodeProject\Entities\User;
 use CodeProject\Repositories\ProjectMemberRepository;
 use CodeProject\Repositories\ProjectRepository;
+use CodeProject\Validators\ProjectFileValidator;
 use CodeProject\Validators\ProjectValidator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -42,13 +43,17 @@ class ProjectService
      * @var Storage
      */
     private $storage;
+    /**
+     * @var ProjectFileValidator
+     */
+    private $fileValidator;
 
     /**
      * @param ProjectRepository $repository
      * @param ProjectValidator $validator
      * @param ProjectMemberRepository $projectMemberRepository
      */
-    public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectMemberRepository $projectMemberRepository, Filesystem $filesystem, Storage $storage)
+    public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectFileValidator $fileValidator, ProjectMemberRepository $projectMemberRepository, Filesystem $filesystem, Storage $storage)
     {
 
         $this->repository = $repository;
@@ -56,6 +61,7 @@ class ProjectService
         $this->projectMemberRepository = $projectMemberRepository;
         $this->filesystem = $filesystem;
         $this->storage = $storage;
+        $this->fileValidator = $fileValidator;
     }
 
     /**
@@ -195,18 +201,28 @@ class ProjectService
 
     public function createFile(array $data)
     {
-        $project = $this->repository->skipPresenter()->find($data['project_id']);
-        if(!$project)
-            return "Projeto não existe";
+        try{
+            $this->fileValidator->with($data)->passesOrFail();
+            $project = $this->repository->skipPresenter()->find($data['project_id']);
+            if(!$project)
+                return "Projeto não existe";
 
-        try {
-            $projectFile = $project->files()->create($data);
+            try {
+                $projectFile = $project->files()->create($data);
 
-            $this->storage->put($projectFile->id . "." . $data['extension'], $this->filesystem->get($data['file']));
-            return "Arquivo " . $data['name'] . " criado com sucesso";
-        } catch (Exception $e) {
-            return "Erro ao criar arquivo: " . $e;
+                $this->storage->put($projectFile->id . "." . $data['extension'], $this->filesystem->get($data['file']));
+                return "Arquivo " . $data['name'] . " criado com sucesso";
+            } catch (Exception $e) {
+                return "Erro ao criar arquivo: " . $e;
+            }
+
+        } catch (ValidatorException $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessageBag()
+            ];
         }
+
     }
 
     public function removeFile($project_id, $file_id)
