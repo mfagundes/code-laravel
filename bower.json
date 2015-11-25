@@ -1,0 +1,31 @@
+{
+  "name": "laravel-codeproject-frontend",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mfagundes/code-laravel",
+  "authors": [
+    "mauricio <mauricio.fagundes@gmail.com>"
+  ],
+  "description": "Frontend de Gerenciador de Projetos",
+  "license": "MIT",
+  "moduleType": [
+    "amd"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "resources/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.4.1",
+    "angular-animate": "1.4.1",
+    "angular-bootstrap": "0.13.0",
+    "angular-messages": "1.4.1",
+    "angular-resource": "1.4.1",
+    "angular-route": "1.4.1",
+    "angular-strap": "2.2.4",
+    "bootstrap": "3.3.5"
+  }
+}
